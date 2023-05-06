@@ -20,3 +20,34 @@ a1ca44662d01c859c86a3251f58737144434a1179df9c171e5182a4cb53a20e5
 554012ee7f05f258a195c2c3b9812f4dc1836d0d74e8f8b5240f97770254ddc3
 c219cf9b84ccbd2f16f7ac9a695584146ddaaabd9a42c8ba7b9e0eed28c5ec05
 c0673dc9624f8a0a5bc7e9f75d9dec603b78e700793d7284df203235e2277492
+
+
+let facultad = await Facultad.deployed(accounts[0],{montoInscripcion: 1000});
+facultad.generarCarrera('Ingenieria en informatica',{from: accounts[0]});
+facultad.resgistrarEstudiante('Pablo', 'Gaido',42000000,{from: accounts[1]});
+facultad.pagarInscripcion({value:1000,from: accounts[0]});
+
+
+
+({value:1000,from: accounts[0]})
+
+ballot.chairperson();
+ballot.giveRightToVote(accounts[1], {from: accounts[0]});
+ballot.withdrawRightToVote(accounts[1], {from: accounts[0]});
+ballot.start({from: accounts[0]});
+ballot.vote(2, {from: accounts[0]});
+ballot.end({from: accounts[0]});
+ballot.winningProposals({from: accounts[0]});
+
+Ballot.deployed().then(function(instance) {
+	return instance.winningProposals.call();
+}).then(function(result) {
+	console.log(result.toNumber());
+});
+
+Ballot.deployed().then(function(instance) {
+	return instance.winningProposals.call();
+}).then(function(result) {
+	console.log(result.toNumber());
+});
+*/
