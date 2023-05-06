@@ -1,5 +1,10 @@
 # @version ^0.3.7
 
+# External Interfaces
+interface Carrera:
+    def inscribirEstudiante(dni: uint32, estudiante: address): nonpayable
+    def verInscriptos() -> uint32[30]: nonpayable
+    
 struct Inscripto:
     pagado: bool
     analitico: bytes32
@@ -7,9 +12,10 @@ struct Inscripto:
     nombre: String[30]
     apellido: String[30]
 
-
-#struct Carreras:
-#    name: bool
+    
+struct Carreras:
+    carrera: Carrera
+    nombre: String[30]
     
 
 
@@ -20,6 +26,7 @@ event MontoAPagar:
 
 decano: address
 inscriptos: HashMap[address, Inscripto]
+carreraLista: HashMap[String[30], Carreras]
 dniRegistrados: HashMap[uint32, uint32]
 recaudacion: uint256
 
@@ -52,3 +59,25 @@ def pagarInscripcion():
     assert self.montoInscripcion == msg.value , "El monto ingresado no es el adecuado"
     self.recaudacion += msg.value
     self.inscriptos[msg.sender].pagado = True
+
+
+@external
+def inscribirEnCarrera(nombreCarrera: String[30]):
+    self.carreraLista[nombreCarrera].carrera.inscribirEstudiante(self.inscriptos[msg.sender].dni,msg.sender)
+    pass
+
+
+
+@external
+def generarCarrera(nombre: String[30]):
+    assert self.decano == msg.sender, "Solo el decano puede generar carreras"
+    assert self.carreraLista[nombre].nombre == "", "Esta carrera ya se encuentra creada"
+    self.carreraLista[nombre].carrera = Carrera(msg.sender)
+    self.carreraLista[nombre].nombre = nombre
+    pass
+
+
+@external
+def estudiantesDeCarrera(nombreCarrera: String[30])-> uint32[30]:
+    assert self.decano == msg.sender, "Solo el decano puede generar carreras"
+    return  self.carreraLista[nombreCarrera].carrera.verInscriptos()

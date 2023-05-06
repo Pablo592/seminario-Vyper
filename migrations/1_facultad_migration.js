@@ -1,4 +1,4 @@
 var Facultad = artifacts.require("facultad");
 module.exports = function(deployer) {
-    deployer.deploy(Facultad)
+    deployer.deploy(Facultad,1000)
 }
