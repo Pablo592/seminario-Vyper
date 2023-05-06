@@ -4,7 +4,8 @@
 interface Carrera:
     def inscribirEstudiante(dni: uint32, estudiante: address): nonpayable
     def verInscriptos() -> uint32[30]: nonpayable
-    
+
+
 
 # Events #######
 event MontoAPagar:
@@ -64,11 +65,7 @@ def resgistrarEstudianteAnalitico(analitico: bytes32):
 def pagarInscripcion():
     log MontoAPagar(self.montoInscripcion)
     assert self.montoInscripcion == msg.value , "El monto ingresado no es el adecuado"
-
-    if(self.inscriptos[msg.sender].pagado):
-        send(msg.sender,msg.value)
-        assert True, "Ya ha pagado la inscripcion, no desperdicie su dinero"
-    assert not self.inscriptos[msg.sender].pagado , "El monto ingresado no es el adecuado"
+    assert not self.inscriptos[msg.sender].pagado , "Ya ha pagado la inscripcion"
     self.recaudacion += msg.value
     self.inscriptos[msg.sender].pagado = True
 
@@ -78,6 +75,7 @@ def inscribirEnCarrera(nombreCarrera: String[30]):
     assert self.inscriptos[msg.sender].dni != 0, "Este estudiante no se encuentra registrado"
     assert self.inscriptos[msg.sender].analitico != 0x0000000000000000000000000000000000000000000000000000000000000000, "Este estudiante todavia no ha presentado su analitico"
     assert self.inscriptos[msg.sender].pagado, "Este estudiante todavia no ha pagado su inscripcion"
+    assert self.carreraLista[nombreCarrera].nombre != "", "Esta carrera no se encuentra creada"
     self.carreraLista[nombreCarrera].carrera.inscribirEstudiante(self.inscriptos[msg.sender].dni,msg.sender)
     pass
 

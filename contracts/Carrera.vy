@@ -13,7 +13,7 @@ def __init__():
 
 @external
 def inscribirEstudiante(dni: uint32, estudiante: address):
-    assert self.estudiantes[estudiante] != 0, "Este estudiante ya se encuentra registrado"
+    assert self.estudiantes[estudiante] == 0, "Este estudiante ya se encuentra registrado"
     self.direcciones[self.index] = estudiante
     self.index +=1
     self.estudiantes[estudiante] = dni

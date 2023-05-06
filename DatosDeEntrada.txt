@@ -25,9 +25,14 @@ c0673dc9624f8a0a5bc7e9f75d9dec603b78e700793d7284df203235e2277492
 let facultad = await Facultad.deployed(accounts[0],{montoInscripcion: 1000});
 facultad.generarCarrera('Ingenieria en informatica',{from: accounts[0]});
 facultad.resgistrarEstudiante('Pablo', 'Gaido',42000000,{from: accounts[1]});
-facultad.pagarInscripcion({value:1000,from: accounts[0]});
+facultad.pagarInscripcion({value: 1000,from: accounts[1]});
+facultad.resgistrarEstudianteAnalitico('0xc0673dc9624f8a0a5bc7e9f75d9dec603b78e700793d7284df203235e2277492',{from: accounts[1]});
+facultad.inscribirEnCarrera('Ingenieria en informatica',{from: accounts[1]});
 
 
+
+let carrera = await Carrera.deployed(accounts[0]);
+carrera.inscribirEstudiante(42000000, accounts[0]);
 
 ({value:1000,from: accounts[0]})
 
