@@ -4,8 +4,14 @@ struct Inscripto:
     pagado: bool
     analitico: bytes32
     dni: uint32
-    nombre: uint32
-    apellido: uint32
+    nombre: String[30]
+    apellido: String[30]
+
+
+#struct Carreras:
+#    name: bool
+    
+
 
 montoInscripcion: uint256
 
@@ -24,7 +30,7 @@ def __init__(montoInscripcion: uint256):
 
 
 @external
-def resgistrarEstudiante(nombre: uint32, apellido: uint32,dni: uint32):
+def resgistrarEstudiante(nombre: String[30], apellido: String[30],dni: uint32):
     assert self.inscriptos[msg.sender].dni == 0, "Este estudiante ya se encuentra registrado"
     assert self.dniRegistrados[dni] == 0, "No se aceptan los DNI duplicados"
 
