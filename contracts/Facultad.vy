@@ -2,9 +2,10 @@
 
 # External Interfaces
 interface Carrera:
+    def establecerDuenio(decano: address): nonpayable
     def inscribirEstudiante(dni: uint32, estudiante: address): nonpayable
-    def verInscriptos() -> uint32[30]: nonpayable
-
+    def verInscriptos(decano: address) -> DynArray[uint32, 30]: nonpayable
+    def destroy(decano: address): nonpayable
 
 
 # Events #######
@@ -31,6 +32,7 @@ carreraLista: HashMap[String[30], Carreras]
 dniRegistrados: HashMap[uint32, uint32]
 
 # Variables varias #####
+nombres: DynArray[String[30], 30]
 montoInscripcion: uint256
 decano: address
 recaudacion: uint256
@@ -82,20 +84,24 @@ def inscribirEnCarrera(nombreCarrera: String[30]):
 
 
 @external
-def generarCarrera(nombre: String[30]):
+def generarCarrera(dreccionContrato:address, nombre: String[30]):
     assert self.decano == msg.sender, "Solo el decano puede generar carreras"
     assert self.carreraLista[nombre].nombre == "", "Esta carrera ya se encuentra creada"
-    self.carreraLista[nombre].carrera = Carrera(msg.sender)
+    self.carreraLista[nombre].carrera = Carrera(dreccionContrato)
+    self.carreraLista[nombre].carrera.establecerDuenio(self.decano)
     self.carreraLista[nombre].nombre = nombre
+    self.nombres.append(nombre)
     pass
 
 
 @external
-def estudiantesDeCarrera(nombreCarrera: String[30])-> uint32[30]:
-    assert self.decano == msg.sender, "Solo el decano puede generar carreras"
-    return  self.carreraLista[nombreCarrera].carrera.verInscriptos()
+def estudiantesDeCarrera(nombreCarrera: String[30])-> DynArray[uint32, 30]:
+    assert self.decano == msg.sender, "Solo el decano puede llamar a esta funcion"
+    return self.carreraLista[nombreCarrera].carrera.verInscriptos(msg.sender)
 
 @external
-def destroy():
+def cerrarInscripciones():
     assert self.decano == msg.sender, "Solo el decano puede destruir el contrato"
+    for i in self.nombres:
+        self.carreraLista[i].carrera.destroy(msg.sender)
     selfdestruct(msg.sender)

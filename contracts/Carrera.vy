@@ -3,29 +3,30 @@
 
 decano: address
 estudiantes: HashMap[address, uint32]
-direcciones: address[30]
-index: uint32
+dnis: DynArray[uint32, 30]
 
 @external
 def __init__():
-    self.decano = msg.sender
+    pass
 
+
+@external
+def establecerDuenio(decano:address):
+    assert self.decano == 0x0000000000000000000000000000000000000000, "El decano de este contrato ya se encuentra establecido"
+    self.decano = decano
 
 @external
 def inscribirEstudiante(dni: uint32, estudiante: address):
     assert self.estudiantes[estudiante] == 0, "Este estudiante ya se encuentra registrado"
-    self.direcciones[self.index] = estudiante
-    self.index +=1
     self.estudiantes[estudiante] = dni
+    self.dnis.append(dni)
 
 @external
-def verInscriptos() -> uint32[30]:
-    assert self.decano == msg.sender, "Solo el decano puede solicitar la lista de inscriptos"
-    dnis: uint32[30] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+def verInscriptos(decano:address) -> DynArray[uint32, 30]:
+    assert self.decano == decano, "Solo el decano puede solicitar la lista de inscriptos"
+    return self.dnis
 
-    indice : uint32 = 0
-    for  i in  self.direcciones:
-        dnis[indice] =  self.estudiantes[i]
-        indice +=1
-    
-    return dnis
+@external
+def destroy(decano:address):
+    assert self.decano == decano, "Solo el decano puede solicitar la lista de inscriptos"
+    selfdestruct(msg.sender)
