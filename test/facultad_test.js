@@ -36,7 +36,7 @@ contract("Facultad", (accounts) => {
         }, /Este estudiante no se encuentra registrado/);
     });
 
-    it("Debe poder registrar a un estudiante", async () => {
+    it("Se debe poder registrar a un estudiante", async () => {
         const FacultadInstance = await Facultad.deployed(accounts[0], costoCuota);
         const resultado = await FacultadInstance.resgistrarEstudiante('Pablo', 'Gaido', 42000000, { from: accounts[1] });
         assert.equal(resultado.logs[0].event, "EstudianteRegistrado", "Hubo un error al registrar al estudiante");
@@ -60,14 +60,14 @@ contract("Facultad", (accounts) => {
         assert.equal(resultado.logs[0].args.analitico.toString(), analitico);
     });
 
-    it('Debe ingresar un monto correcto al pagar la inscripcion', async () => {
+    it('Se debe ingresar un monto correcto al pagar la inscripcion', async () => {
         await verifyThrows(async () => {
             const FacultadInstance = await Facultad.deployed(accounts[0], costoCuota);
             await FacultadInstance.pagarInscripcion({ value: 0, from: accounts[1] });
         }, /El monto ingresado no es el adecuado/);
     });
 
-    it("Debe poder pagar la inscripcion", async () => {
+    it("Se debe poder pagar la inscripcion", async () => {
         const FacultadInstance = await Facultad.deployed(accounts[0], costoCuota);
         resultado = await FacultadInstance.pagarInscripcion({ value: '1000', from: accounts[1] });
         assert.equal(resultado.logs[0].event, "MontoAPagar", "Hubo un error al pagar la inscripcion");
